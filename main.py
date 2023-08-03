@@ -13,9 +13,12 @@ from mutils import convert
 import os
 from google.cloud import storage as gcs
 
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'mobility-scooter-app-firebase-adminsdk-twji0-182bd76cd8.json'
+os.environ['BUCKET_NAME'] = 'trainingvideo-project-123-20230726'
+
 MODEL_NAME = "trained_with_20_files"
 TIMESTAMPS = 16
-bucket_name = 'trainingvideo-project-123-20230726'
+bucket_name = os.getenv('BUCKET_NAME')
 
 # Load your model
 storage_client = gcs.Client()
@@ -30,7 +33,7 @@ firebase_blob.download_to_filename('/tmp/mobility-scooter-app-firebase-adminsdk-
 
 # Initialize Firebase
 cred = credentials.Certificate('/tmp/mobility-scooter-app-firebase-adminsdk-twji0-182bd76cd8.json')
-default_app = initialize_app(cred, {'storageBucket': 'trainingvideo-project-123-20230726'})
+default_app = initialize_app(cred, {'storageBucket': bucket_name})
 bucket = storage.bucket()
 
 

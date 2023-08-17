@@ -1,5 +1,3 @@
-from flask import Flask, request, jsonify
-import requests
 import tempfile
 import cv2
 import mediapipe as mp
@@ -57,6 +55,7 @@ def process_video(video_file):
     pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
     mae_losses = []  # Store all the losses
     try:
+        frame_data = []
         while cap.isOpened():
             success, image = cap.read()
             if not success:
@@ -66,8 +65,12 @@ def process_video(video_file):
             results = pose.process(image)
             if results.pose_landmarks is not None:
                 converted_landmarks = convert(results.pose_world_landmarks.landmark)
-                mae_loss = model.evaluate(np.array([converted_landmarks]), np.array([converted_landmarks]), verbose=0)[0]
-                mae_losses.append(mae_loss)
+                frame_data.append(converted_landmarks)
+                if len(frame_data) == 16:
+                    mae_loss = model.evaluate(np.array([frame_data]), np.array([frame_data]), verbose=0)[0]
+                    mae_losses.append(mae_loss)
+                    frame_data = []
+
     finally:
         cap.release()
     return mae_losses

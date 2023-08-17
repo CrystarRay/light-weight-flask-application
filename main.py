@@ -1,3 +1,5 @@
+from flask import Flask, request, jsonify
+import requests
 import tempfile
 import cv2
 import mediapipe as mp

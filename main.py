@@ -37,6 +37,10 @@ def predict():
     if mae_losses:
         average_loss = sum(mae_losses) / len(mae_losses)
         result = {"average_loss": average_loss, "all_losses": mae_losses}
+        if average_loss > 0.5:
+            result = "unstable!"
+        else:
+            result = "stable!"
     else:
         result = "No pose detected"
 
